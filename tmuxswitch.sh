@@ -17,39 +17,44 @@ DIR=$1
 result=`ratpoison -c "info %a"`
 
 #Go forward or backward accordingly
-if [ "$DIR" == "n" ]
-then
-if [ "$result" == "emacs" ]
-then  emacsclient -e "(next-buffer)"
-else  
-result=`ratpoison -c "info %t"`
-if  echo $result |grep "tmux" -q 
-then 
-tmux next
-else  
-ratpoison -c "meta s-n"
-exit 0 
-fi
-fi
-ratpoison -c "meta s-n"
-exit 0 
-fi
 
+case $DIR in
+    n)
+	case $result in
+	    emacs)
+		emacsclient -e "(next-buffer)"
+		exit 0
+		;;
+	esac
+	result=`ratpoison -c "info %t"`
+	case $result  in
+	    tmux*) 
+		tmux next
+		;;
+		*)
+		ratpoison -c "meta s-n"
+		exit 0 
+		;;
+	esac
+	;;
+    p)
+	case $result in
+	    emacs)
+		emacsclient -e "(previous-buffer)"
+		exit 0
+		;;
+	esac
+	result=`ratpoison -c "info %t"`
+	case $result  in
+	    tmux*) 
+		tmux prev
+		;;
+		*)
+		ratpoison -c "meta s-p"
+		exit 0 
+		;;
+	esac
+	;;
 
-if [ "$DIR" == "p" ]
-then
-if [ "$result" == "emacs" ]
-then   emacsclient -e "(previous-buffer)"; exit 0
-else  
-result=`ratpoison -c "info %t"`
-if  echo "$result" |grep "tmux" -q 
-then 
-tmux prev #tmuxfocus.sh D
-else
-ratpoison -c "meta s-p"
-exit 0 #ratpoison -c "focusdown"
-fi
-fi
-ratpoison -c "meta s-p"
-exit 0 
-fi
+esac
+
