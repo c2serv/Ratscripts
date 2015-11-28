@@ -25,6 +25,28 @@ case $DIR in
 		emacsclient -e "(next-buffer)"
 		exit 0
 		;;
+	    Google-chrome-stable)
+		#I don't know of a similar extension for chrome
+		#that works as well as keyconfgi
+		#Added this when I spent a lot of time
+	        #working with a google sheet
+		ratpoison -c "meta C-Next"
+		exit 0
+		;;
+	esac
+	wname=`ratpoison -c "info %t"`
+	ratpoison -c echo $wname
+	case $wname in
+	    *"Mozilla Firefox"*) 
+		case $wname in
+		    #To get tab cycle to work in Firefox pdf viewer
+		    #PDF viewer has its own keybindings
+		    *".pdf"*)
+			ratpoison -c "meta C-Next"
+			exit 0
+		    ;;	 
+		esac
+		;;
 	esac
 	result=`ratpoison -c "info %t"`
 	case $result  in
@@ -43,7 +65,31 @@ case $DIR in
 		emacsclient -e "(previous-buffer)"
 		exit 0
 		;;
+	    Google-chrome-stable)
+		#I don't know of a similar extension for chrome
+		#that works as well as keyconfgi
+		#Added this when I spent a lot of time
+	        #working with a google sheet
+		ratpoison -c "meta C-Prior"
+		exit 0
+		;;
+
 	esac
+	wname=`ratpoison -c "info %t"`
+	ratpoison -c echo $wname
+	case $wname in
+	    *"Mozilla Firefox"*) 
+		case $wname in
+		    #To get tab cycle to work in Firefox pdf viewer
+		    #PDF viewer has its own keybindings
+		    *".pdf"*)
+			ratpoison -c "meta C-Prior"
+			exit 0
+		    ;;	 
+		esac
+		;;
+	esac
+
 	result=`ratpoison -c "info %t"`
 	case $result  in
 	    tmux*) 
