@@ -17,7 +17,7 @@ DIR=$1
 result=`ratpoison -c "info %a"`
 
 #Go forward or backward accordingly
-
+#ratpoison -c "echo $result"
 case $DIR in
     n)
 	case $result in
@@ -47,6 +47,10 @@ case $DIR in
 		    ;;	 
 		esac
 		;;
+	    *"System Monitor"*)
+		ratpoison -c "meta C-Right"
+		exit 0
+		;;
 	esac
 	result=`ratpoison -c "info %t"`
 	case $result  in
@@ -73,7 +77,6 @@ case $DIR in
 		ratpoison -c "meta C-Prior"
 		exit 0
 		;;
-
 	esac
 	wname=`ratpoison -c "info %t"`
 	ratpoison -c echo $wname
@@ -88,6 +91,11 @@ case $DIR in
 		    ;;	 
 		esac
 		;;
+	    *"System Monitor"*)
+		ratpoison -c "meta C-Left"
+		exit 0
+		;;
+
 	esac
 
 	result=`ratpoison -c "info %t"`
