@@ -35,7 +35,7 @@ case $DIR in
 		;;
 	esac
 	wname=`ratpoison -c "info %t"`
-	ratpoison -c echo $wname
+	ratpoison -c echo "$wname"
 	case $wname in
 	    *"Mozilla Firefox"*) 
 		case $wname in
@@ -48,7 +48,7 @@ case $DIR in
 		esac
 		;;
 	    *"System Monitor"*)
-		ratpoison -c "meta C-Right"
+		ratpoison -c "meta C-Tab"
 		exit 0
 		;;
 	esac
@@ -79,7 +79,7 @@ case $DIR in
 		;;
 	esac
 	wname=`ratpoison -c "info %t"`
-	ratpoison -c echo $wname
+	ratpoison -c echo "$wname"
 	case $wname in
 	    *"Mozilla Firefox"*) 
 		case $wname in
@@ -92,7 +92,7 @@ case $DIR in
 		esac
 		;;
 	    *"System Monitor"*)
-		ratpoison -c "meta C-Left"
+		ratpoison -c "meta C-S-Tab"
 		exit 0
 		;;
 
