@@ -1,0 +1,64 @@
+
+/* BODY{font-family:"Gill Sans", "Arial", "Helvetica", sans-serif; */
+/*        font-size: 100%; */
+/*        color:navy; */
+/*        background-color: #ffffff;} */
+/*   TABLE{font-family:"Times", "Arial", "Helvetica", sans-serif; */
+/*         font-size: 100%; */
+/*         color:navy; */
+/*        } */
+ table.center{margin: 0 auto;
+}
+ table.main{table-layout:fixed;
+	    display:table;
+	    margin:auto;
+	    width:85%;
+}
+  td.right{vertical-align:text-top; max-width:10em;
+	  min-width:5em;width:85%}
+  .main{table-layout:fixed;
+	    display:table;
+	    margin:auto;
+	    max-width: 50em;
+	    min-width: 45em;
+	    border-spacing: 0em;
+	    border-collapse: separate;}  
+  .toptable{font-family:"Times", "Arial", "Helvetica", sans-serif;
+        font-size: 100%;
+        color:navy;
+	    display:table;
+	    margin:auto;
+	    width:95%;
+	    background-color: #ffffff;
+}  
+  .row{display:table-row;font-family:"Times", "Arial", "Helvetica", sans-serif;
+        font-size: 100%;
+        color:navy;}
+  .leftcell{padding-left:0em;display:table-cell; vertical-align:text-top;width: 15%;border-spacing:10em;}
+  .rightcell{display:table-cell; vertical-align:text-top;min-width:35em;padding-left:1em;}
+  ul{ margin: .5em;}
+  inner{display:table-cell;}
+/*   H1{font-family:"Gill Sans", "Arial", "Helvetica", sans-serif; */
+/*      font-size: 200%; */
+/*      font-weight:500; */
+/*      color:navy; */
+/* } */
+
+/*   H2{font-family:"Gill Sans", "Arial", "Helvetica", sans-serif; */
+/*      font-size: 160%; */
+/*      font-weight:500;  */
+/*      color:navy; */
+/* } */
+/*   H3{font-family:"Gill Sans", "Arial", "Helvetica", sans-serif; */
+/*      font-size: 120%; */
+/*      font-weight:500;  */
+/*         color:navy; */
+/*     } */
+  a{text-decoration:none;
+    color:blue;}
+  .book   { margin: 1em 0pt 0pt 25px; width:50em;
+            border-top: 1px solid #ccc; padding-top: 5px }
+  .book p { margin-bottom: 1em; }
+  .gbs_preview_button img { border: 0; margin: 0 }
+  .gbs_thumb_img { float: right; margin: 0 0 10px 10px;
+                   border: 1px solid #666; padding: 2px }
