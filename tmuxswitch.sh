@@ -14,10 +14,10 @@
 #Determine Direction
 DIR=$1 
 #Determine current frame
-result=`ratpoison -c "info %a"`
+result=`ratpoison -d $DISPLAY -c "info %a"`
 
 #Go forward or backward accordingly
-#ratpoison -c "echo $result"
+#ratpoison -d $DISPLAY -c "echo $result"
 case $DIR in
     n)
 	case $result in
@@ -30,42 +30,50 @@ case $DIR in
 		#that works as well as keyconfgi
 		#Added this when I spent a lot of time
 	        #working with a google sheet
-		ratpoison -c "meta C-Next"
+		ratpoison -d $DISPLAY -c "meta C-Next"
 		exit 0
 		;;
 	esac
-	wname=`ratpoison -c "info %t"`
-	ratpoison -c echo $wname
+	wname=`ratpoison -d $DISPLAY -c "info %t"`
+	ratpoison -d $DISPLAY -c echo "$wname"
 	case $wname in
 	    *"Mozilla Firefox"*) 
 		case $wname in
 		    #To get tab cycle to work in Firefox pdf viewer
 		    #PDF viewer has its own keybindings
 		    *".pdf"*)
-			ratpoison -c "meta C-Next"
+			ratpoison -d $DISPLAY -c "meta C-Next"
 			exit 0
-		    ;;	 
-		    *)
-			ratpoison -c "meta C-Next"
+			;;
+		    *"Inbox "*)
+			ratpoison -d $DISPLAY -c "meta C-Next"
 			exit 0
-		    ;;
+			;;
+		   *)
+		   ratpoison -d $DISPLAY -c "meta C-Next"
+		   exit 0
+		   ;;
 		esac
 		;;
 	    *"System Monitor"*)
-		ratpoison -c "meta C-Right"
+		ratpoison -d $DISPLAY -c "meta C-Tab"
 		exit 0
 		;;
 	esac
-	result=`ratpoison -c "info %t"`
+	result=`ratpoison  -d $DISPLAY -c "info %t"`
+
 	case $result  in
 	    tmux*) 
-		tmux next -t 0
+#	    ratpoison -d $DISPLAY -c "echo what $result"
+	    tmux  next -t 0
+		exit 0
 		;;
 		*)
-		ratpoison -c "meta s-n"
-		exit 0 
+		ratpoison -d $DISPLAY -c "meta s-n"
+
 		;;
 	esac
+
 	;;
     p)
 	case $result in
@@ -78,20 +86,30 @@ case $DIR in
 		#that works as well as keyconfgi
 		#Added this when I spent a lot of time
 	        #working with a google sheet
-		ratpoison -c "meta C-Prior"
+		ratpoison -d $DISPLAY -c "meta C-Prior"
 		exit 0
 		;;
 	esac
-	wname=`ratpoison -c "info %t"`
-	ratpoison -c echo $wname
+	wname=`ratpoison -d $DISPLAY -c "info %t"`
+	ratpoison -d $DISPLAY -c echo "$wname"
 	case $wname in
 	    *"Mozilla Firefox"*) 
 		case $wname in
 		    #To get tab cycle to work in Firefox pdf viewer
 		    #PDF viewer has its own keybindings
 		    *".pdf"*)
-			ratpoison -c "meta C-Prior"
+			ratpoison -d $DISPLAY -c "meta C-Prior"
 			exit 0
+			;;
+		    *"Inbox "*)
+			ratpoison -d $DISPLAY -c "meta C-Prior"
+			exit 0
+			
+			;;
+			*)
+			ratpoison -d $DISPLAY -c "meta C-Prior"
+			exit 0
+
 		    ;;	 
 		    *)
 			ratpoison -c "meta C-Prior"
@@ -101,19 +119,24 @@ case $DIR in
 		esac
 		;;
 	    *"System Monitor"*)
-		ratpoison -c "meta C-Left"
+		ratpoison -d $DISPLAY -c "meta C-S-Tab"
 		exit 0
 		;;
 
 	esac
 
-	result=`ratpoison -c "info %t"`
+	result=`ratpoison -d $DISPLAY -c "info %t"`
 	case $result  in
 	    tmux*) 
-		tmux prev -t 0
+
+#		tmux prev -t 0
+
+		tmux prev
+		exit 0 
+
 		;;
 		*)
-		ratpoison -c "meta s-p"
+		ratpoison -d $DISPLAY -c "meta s-p"
 		exit 0 
 		;;
 	esac

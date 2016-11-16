@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet"
+        href="sheet1.css"
+          type="text/css">
+
+  </head>
+
+<title>Useful Scripts for ratpoison,tmux,emacs, etc</title>
+<body>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-66672799-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+<h1> Useful Scripts for ratpoison,tmux,emacs, etc</h1> I use ratpoison
+as my windows manager, and tmux running inside Konsole for my
+terminal.  Here are some of the scripts that I use regularly.  Maybe
+you will find them useful as well.
+<table class="main">
+<ul>
+<li><a href="https://github.com/c2serv/Ratscripts/blob/master/emacsfindfile.sh">emacsfindfile.sh</a></li>
+    I use this script for opening an emacs find-file prompt in the cwd from the command-line.<br>
+    The script assumes that emacs is already running and their is a ratpoison frame with emacs.<br>
+    I invoke it from tmux using C-f.<br>  To bind it to C-f, I have the following in my <tt>.tmux.conf</tt>.
+<pre class="prettyprint" style="margin-left:3em">
+bind C-f run "~/bin/emacsfindfile.sh"
+</pre>
+The command will fail if you already have an active mini-buffer.  To avoid this set <tt>enable-recursive-minibuffers</tt> to true.
+
+</li>
+<li><a href="https://github.com/c2serv/Ratscripts/blob/master/tmuxswitch.sh">tmuxswitch.sh</a></li> The first two
+    shorcuts that I setup when learning emacs was <tt>s-n</tt>
+    and <tt>s-p</tt> for cycling forward and backward through the
+    buffers.  Over the years I have tried to add the same shortcut to
+    other programs such as firefox and thunderbird.  I wrote this script
+    so that I could cycle through windows in tmux.  The script handles
+    <tt>s-n</tt> and <tt>s-p</tt> for emacs and tmux and passes these
+    the key combination through to the frame otherwise.<br>
+    It works with the following  bindings  in my <tt>.ratpoisonrc</tt>.
+<pre style="margin-left:3em" class="prettyprint">
+definekey top s-p  exec $HOME/bin/tmuxswitch p
+definekey top s-n  exec $HOME/bin/tmuxswitch n
+</pre>
+</li>
+<li>Currently thunderbird and mozilla don't recognize the Win/Super/OS key.  Fortunately there is the <a href="http://forums.mozillazine.org/viewtopic.php?t=72994">keyconfig extension</a>.  The following patch to the <tt>keyconfig.js</tt> in <tt>keyconfig.zip/content/</tt> adds support for the Win/Super/OS key.
+  <pre  class="prettyprint" style="margin-left:3em">
+--- keyconfig.js.orig	2015-10-14 09:08:54.710659535 -0400
++++ keyconfig.js.new	2015-10-14 09:09:47.735634106 -0400
+@@ -32,10 +32,12 @@
+  gPlatformKeys.alt   = platformKeys.getString("VK_ALT");
+  gPlatformKeys.ctrl  = platformKeys.getString("VK_CONTROL");
+  gPlatformKeys.sep   = platformKeys.getString("MODIFIER_SEPARATOR");
++ gPlatformKeys.win   = platformKeys.getString("VK_WIN");
+  switch (gPrefService.getIntPref("ui.key.accelKey")){
+   case 17:  gPlatformKeys.accel = gPlatformKeys.ctrl; break;
+   case 18:  gPlatformKeys.accel = gPlatformKeys.alt; break;
+   case 224: gPlatformKeys.accel = gPlatformKeys.meta; break;
++  case 91: gPlatformKeys.accel = gPlatformKeys.win; break;
+   default:  gPlatformKeys.accel = (window.navigator.platform.search("Mac") == 0 ? gPlatformKeys.meta : gPlatformKeys.ctrl);
+  }
+
+@@ -102,7 +104,7 @@
+ function onOK() { }
+
+ function getFormattedKey(modifiers,key,keycode) {
+- if(modifiers == "shift,alt,control,accel" && keycode == "VK_SCROLL_LOCK") return gStrings.disabled;
++ if(modifiers == "shift,alt,control,accel,os" && keycode == "VK_SCROLL_LOCK") return gStrings.disabled;
+  if(!key && !keycode) return gStrings.disabled;
+
+  var val = "";
+@@ -112,6 +114,7 @@
+   .replace("shift",gPlatformKeys.shift)
+   .replace("control",gPlatformKeys.ctrl)
+   .replace("meta",gPlatformKeys.meta)
++  .replace("os",gPlatformKeys.win)
+   .replace("accel",gPlatformKeys.accel)
+   +gPlatformKeys.sep;
+  if(key == " ") {
+@@ -179,6 +182,7 @@
+  if(event.ctrlKey) modifiers.push("control");
+  if(event.metaKey) modifiers.push("meta");
+  if(event.shiftKey) modifiers.push("shift");
++ if(event.getModifierState("OS")) modifiers.push("os");
+
+  modifiers = modifiers.join(" ");
+
+  </pre>
+  Keyconfig code for thunderbird for cycling through tabs<br>
+  <b>Tab Next</b>
+  <pre  class="prettyprint" style="margin-left:3em">
+gBrowser.mTabContainer.advanceSelectedTab(1,true);
+var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator);
+var winId =windowManager.getMostRecentWindow("mail:3pane");
+var tabmail = winId.document.getElementById("tabmail");
+tabmail.switchToTab((tabmail.tabContainer.selectedIndex + 1) % tabmail.tabInfo.length)
+  </pre>
+    <b>Tab Previous</b>
+  <pre  class="prettyprint" style="margin-left:3em">
+var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator);
+var winId =windowManager.getMostRecentWindow("mail:3pane");
+var tabmail = winId.document.getElementById("tabmail");
+tabmail.switchToTab((tabmail.tabContainer.selectedIndex - 1) % tabmail.tabInfo.length)
+  </pre>
+  Firefox requires different code for switching tabs.
+ Keyconfig code for Firefox for cycling through tabs<br>
+  <b>Tab Next</b>
+  <pre  class="prettyprint" style="margin-left:3em">
+gBrowser.mTabContainer.advanceSelectedTab(1,true);
+  </pre>
+    <b>Tab Previous</b>
+    <pre  class="prettyprint" style="margin-left:3em">
+gBrowser.mTabContainer.advanceSelectedTab(-1,true);
+    </pre>
+
+</li>
+
+<li>THIS IS CURRENTLY BROKEN FOR THE LATEST VERSION OF EMACS 24.5.  THE SYNTAX FOR EXTERNAL VIEWERS CHANGED SLIGHTLY, AND I HAVEN'T TAKEN THE TIME TO FIGURE OUT WHAT NEEDS TO CHANGE.  IT SHOULD BE A SIMPLE FIX.  <a href="https://sourceforge.net/projects/xulpdftex/?source=navbar">xpdfsync</a> is a set of scripts to make emacs, pdfsync and xpdf work together for forward and inverse search.  Currently the synchronization can only handle pdfs that are built from a single tex file.  Currently there are five scripts
+  <ol>
+    <li><tt>gvsc</tt><br> This is the script that emacs calls for the forward sync.  It takes as input the filename and the line number.  To use it add
+      add the following to the TeX-view-program-list
+      <pre  class="prettyprint">
+	("xpdfsync" "gvsc %b %n")
+	</pre>
+      and select xpdfsync as the viewer for output-pdf in TeX View Program Selection.
+      </li>
+    <li><tt>pdfsyncerer.sh</tt><br> This is the script
+       that <tt>gvsc</tt> calls to determine the page number and
+       coordinates on the page for the given tex file and line number.
+       It opens and xpdf remote server it centers the view about those
+       coordinates.
+    </li>
+    <li><tt>mouseclick.sh</tt><br>
+      This script takes the coordinates from a mouse click on a pdf, given in pt units, and determines a line number in the corresponding TeX file.  Add the following to your <tt>.xpdfrc</tt>
+      <pre  class="prettyprint">
+	bind shift-mousePress1 any "run(sh ~/bin/mouseclick.sh %f %p %j %k)"</pre>
+	<li><tt>findclosestline.sh</tt><br>
+	  This finds the closest line to the specified line that has a record associated with it.</li>
+	<li><tt>findclosestp.sh</tt><br>
+	   Even though a line may have a record associated with it, that record may not exist.  This finds the closest record to a given record.</li>
+
+    </li>
+  </ol>
+  The files can be found on sourceforge.<br>
+      <a href="https://sourceforge.net/projects/xulpdftex/files/latest/download" rel="nofollow"><img alt="Download XPDFSYNC" src="https://a.fsdn.com/con/app/sf-download-button"></a>
+</li>
+<li>Patch for Xpdf<br>
+I like the way gv allows for scrolling up and down using SPACE and Shift-SPACE.  When I switched back to using Xpdf from using gv, I found that I was unable to bind any shortcuts to SPACE.  The modifier mask simply didn't allow for it.<br>
+The following patch to Xpdf allows you to create shortcuts that have the SPACE in them.<br>
+<a href="https://github.com/c2serv/Ratscripts/blob/master/xpdf.GlobalParams.diff"><tt>xpdf.GlobalParams.diff</tt></a>
+
+</li>
+<li> One of the first set of keyboard shortcuts that I defined when I started using ratpoison was to facilitate the movement between frames:
+<pre  class="prettyprint" style="margin-left:3em">
+definekey top s-h focusleft
+definekey top s-j focusdown
+definekey top s-k focusup
+definekey top s-l focusright
+</pre>
+Of course these mimic the movement keys for vi, and avoid having to
+take your hand off the keyboard to use the arrow keys.  This works
+okay but ratpoison is not the only program that you might have open
+that his its own "frames".  An emacs frame can have mutliple windows.
+A tmux window can have several panes.<br>
+
+With the help of windmove I created a script for moving between
+ratpoison frames and emacs windows.  When I eventually started using
+tmux I wrote a script for switching between ratpoison frames and tmux
+panes.<br>  To have emacs move to adjacent ratpoison frames when at
+the edge of a frame I had to modify the function <tt>
+windmove-do-window-select</tt> in windmove.el.  Depending on how you
+have emacs installed, place the moidified version
+of <a href="https://github.com/c2serv/Ratscripts/blob/master/windmove.el"><tt>windmove.el</tt></a>
+in a place such that it will be loaded so as to override the built-in
+version.  I place mine in <tt>/usr/local/share/emacs/site-lisp</tt>.
+Note if you find that you aren't switching frames as expected in
+particular directions such as right or down.  This is due to the tiny
+border around emacs windows.  This behavior can be over come by
+setting the <tt>windmove-window-distance-delta</tt> to either 2 or
+3. <br> I currentlly have issues with pane switching in emacs using
+these shortcuts, if there is more than one tmux session.  I had got in
+the habit starting the emacs daemon and the X server in a separate
+session.  I did this right about the time I upgraded to the latest
+release of Slackware.  It seemed to me that the pane info returned by
+tmux changes significantly if there is more than one active session.
+This kept me from modifying my code to allow for more than one tmux
+session.  I currently make a point of only having one active tmux session.
+
+
+</li>
+</ul>
+</table>
+<div align=center><a href='http://www.counter12.com'><img src='http://www.counter12.com/img-8dz6CZ51-26.gif' border='0' alt='conter12'></a><script type='text/javascript' src='http://www.counter12.com/ad.js?id=8dz6CZ51'></script></div>
+</body>
+</html>
