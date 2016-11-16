@@ -45,6 +45,10 @@ case $DIR in
 			ratpoison -c "meta C-Next"
 			exit 0
 		    ;;	 
+		    *)
+			ratpoison -c "meta C-Next"
+			exit 0
+		    ;;
 		esac
 		;;
 	    *"System Monitor"*)
@@ -55,7 +59,7 @@ case $DIR in
 	result=`ratpoison -c "info %t"`
 	case $result  in
 	    tmux*) 
-		tmux next
+		tmux next -t 0
 		;;
 		*)
 		ratpoison -c "meta s-n"
@@ -89,6 +93,11 @@ case $DIR in
 			ratpoison -c "meta C-Prior"
 			exit 0
 		    ;;	 
+		    *)
+			ratpoison -c "meta C-Prior"
+			exit 0
+		    ;;	 
+
 		esac
 		;;
 	    *"System Monitor"*)
@@ -101,7 +110,7 @@ case $DIR in
 	result=`ratpoison -c "info %t"`
 	case $result  in
 	    tmux*) 
-		tmux prev
+		tmux prev -t 0
 		;;
 		*)
 		ratpoison -c "meta s-p"
